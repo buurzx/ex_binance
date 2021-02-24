@@ -110,5 +110,5 @@ defmodule ExBinance.Rest.HTTPClient do
   defp parse_response_body({:error, err}), do: {:error, {:decode_error, err}}
 
   def endpoint, do: "https://#{domain()}"
-  def domain, do: Application.get_env(:ex_binance, :domain, "api.binance.com")
+  def domain, do: Application.get_env(:ex_binance, :domain, "fapi.binance.com")
 end
