@@ -1,6 +1,6 @@
 defmodule ExBinance.Rest.CreateOrder do
   alias ExBinance.Rest.HTTPClient
-  alias ExBinance.{Timestamp, Credentials}
+  alias ExBinance.{Timestamp}
 
   @receiving_window 1000
 
@@ -25,7 +25,7 @@ defmodule ExBinance.Rest.CreateOrder do
     }
 
     path(futures)
-    |> HTTPClient.post(params, credentials())
+    |> HTTPClient.post(params)
     |> parse_response()
   end
 
@@ -38,9 +38,5 @@ defmodule ExBinance.Rest.CreateOrder do
 
   defp path(futures) do
     if futures, do: "/fapi/v1/order", else: "/api/v3/order"
-  end
-
-  def credentials do
-    Credentials.fetch()
   end
 end

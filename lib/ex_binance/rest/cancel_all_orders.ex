@@ -1,6 +1,6 @@
 defmodule ExBinance.Rest.CancelAllOrders do
   alias ExBinance.Rest.HTTPClient
-  alias ExBinance.{Timestamp, Credentials}
+  alias ExBinance.{Timestamp}
 
   @type symbol :: String.t()
   @type credentials :: ExBinance.Credentials.t()
@@ -18,7 +18,7 @@ defmodule ExBinance.Rest.CancelAllOrders do
     }
 
     path(futures)
-    |> HTTPClient.delete(params, Credentials.fetch())
+    |> HTTPClient.delete(params)
     |> parse_response()
   end
 
