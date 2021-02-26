@@ -2,10 +2,18 @@ defmodule ExBinance.Rest.CreateOrder do
   alias ExBinance.Rest.HTTPClient
   alias ExBinance.Timestamp
 
-  @path "/api/v3/order"
   @receiving_window 1000
 
-  def create_order(symbol, side, type, quantity, price, time_in_force, credentials) do
+  def create_order(
+        symbol,
+        side,
+        type,
+        quantity,
+        price,
+        time_in_force,
+        credentials,
+        futures \\ true
+      ) do
     params = %{
       symbol: symbol,
       side: side,
@@ -17,7 +25,7 @@ defmodule ExBinance.Rest.CreateOrder do
       recvWindow: @receiving_window
     }
 
-    @path
+    path(futures)
     |> HTTPClient.post(params, credentials)
     |> parse_response()
   end
@@ -28,4 +36,8 @@ defmodule ExBinance.Rest.CreateOrder do
     do: {:error, {:insufficient_balance, msg}}
 
   defp parse_response({:error, _} = error), do: error
+
+  defp path(futures) do
+    if futures, do: "/fapi/v1/order", else: "/api/v3/order"
+  end
 end

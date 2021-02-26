@@ -9,12 +9,9 @@ defmodule ExBinance.Rest.CancelOrder do
   @type error_msg :: String.t()
   @type error_reason :: {:not_found, error_msg} | ExBinance.Rest.HTTPClient.shared_errors()
 
-  @path "/api/v3/order"
   @receiving_window 1000
 
-  @spec cancel_order_by_order_id(symbol, order_id, credentials) ::
-          {:ok, ok_response} | {:error, error_reason}
-  def cancel_order_by_order_id(symbol, order_id, credentials) do
+  def cancel_order_by_order_id(symbol, order_id, credentials, futures \\ true) do
     params = %{
       symbol: symbol,
       orderId: order_id,
@@ -22,7 +19,7 @@ defmodule ExBinance.Rest.CancelOrder do
       recvWindow: @receiving_window
     }
 
-    @path
+    path(futures)
     |> HTTPClient.delete(params, credentials)
     |> parse_response()
   end
@@ -33,4 +30,8 @@ defmodule ExBinance.Rest.CancelOrder do
     do: {:error, {:not_found, msg}}
 
   defp parse_response({:error, _} = error), do: error
+
+  defp path(futures) do
+    if futures, do: "/fapi/v1/order", else: "/api/v3/order"
+  end
 end

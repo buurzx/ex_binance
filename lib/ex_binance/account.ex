@@ -26,7 +26,9 @@ defmodule ExBinance.Account do
     :can_withdrawl,
     :can_deposit,
     :update_time,
-    :balances
+    :balances,
+    :total_cross_wallet_balance,
+    :available_balance
   ]
 
   use ExConstructor

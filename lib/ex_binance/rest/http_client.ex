@@ -53,7 +53,11 @@ defmodule ExBinance.Rest.HTTPClient do
 
     signature = sign(credentials.secret_key, argument_string)
     body = "#{argument_string}&signature=#{signature}"
-    headers = [{@api_key_header, credentials.api_key}]
+
+    headers = [
+      {@api_key_header, credentials.api_key},
+      {"Content-Type", "application/x-www-form-urlencoded"}
+    ]
 
     "#{endpoint()}#{path}"
     |> HTTPoison.post(body, headers)
@@ -76,7 +80,11 @@ defmodule ExBinance.Rest.HTTPClient do
 
     signature = sign(credentials.secret_key, argument_string)
     body = "#{argument_string}&signature=#{signature}"
-    headers = [{@api_key_header, credentials.api_key}]
+
+    headers = [
+      {@api_key_header, credentials.api_key},
+      {"Content-Type", "application/x-www-form-urlencoded"}
+    ]
 
     HTTPoison.request(
       method,
