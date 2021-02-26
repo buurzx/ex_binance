@@ -1,4 +1,6 @@
 defmodule ExBinance.Rest.HTTPClient do
+  alias ExBinance.Credentials
+
   @type credentials :: ExBinance.Credentials.t()
   @type path :: String.t()
   @type header :: {key :: String.t(), value :: String.t()}
@@ -26,8 +28,8 @@ defmodule ExBinance.Rest.HTTPClient do
     |> parse_response
   end
 
-  @spec get_auth(path, map, credentials) :: {:ok, any} | {:error, shared_errors}
-  def get_auth(path, params, credentials) do
+  @spec get_auth(path, map) :: {:ok, any} | {:error, shared_errors}
+  def get_auth(path, params) do
     params =
       params
       |> Map.merge(%{
@@ -36,26 +38,26 @@ defmodule ExBinance.Rest.HTTPClient do
       })
 
     query = URI.encode_query(params)
-    signature = sign(credentials.secret_key, query)
+    signature = sign(credentials().secret_key, query)
     signed_params = params |> Map.put(:signature, signature)
-    headers = [{@api_key_header, credentials.api_key}]
+    headers = [{@api_key_header, credentials().api_key}]
 
     get(path, signed_params, headers)
   end
 
-  @spec post(String.t(), map, credentials) :: {:ok, any} | {:error, shared_errors}
-  def post(path, params, credentials) do
+  @spec post(String.t(), map) :: {:ok, any} | {:error, shared_errors}
+  def post(path, params) do
     argument_string =
       params
       |> Map.to_list()
       |> Enum.map(fn x -> Tuple.to_list(x) |> Enum.join("=") end)
       |> Enum.join("&")
 
-    signature = sign(credentials.secret_key, argument_string)
+    signature = sign(credentials().secret_key, argument_string)
     body = "#{argument_string}&signature=#{signature}"
 
     headers = [
-      {@api_key_header, credentials.api_key},
+      {@api_key_header, credentials().api_key},
       {"Content-Type", "application/x-www-form-urlencoded"}
     ]
 
@@ -64,25 +66,25 @@ defmodule ExBinance.Rest.HTTPClient do
     |> parse_response()
   end
 
-  @spec delete(String.t(), map, credentials) :: {:ok, any} | {:error, shared_errors}
-  def delete(path, params, credentials) do
+  @spec delete(String.t(), map) :: {:ok, any} | {:error, shared_errors}
+  def delete(path, params) do
     :delete
-    |> request(path, params, credentials)
+    |> request(path, params)
     |> parse_response()
   end
 
-  defp request(method, path, params, credentials) do
+  defp request(method, path, params) do
     argument_string =
       params
       |> Map.to_list()
       |> Enum.map(fn x -> Tuple.to_list(x) |> Enum.join("=") end)
       |> Enum.join("&")
 
-    signature = sign(credentials.secret_key, argument_string)
+    signature = sign(credentials().secret_key, argument_string)
     body = "#{argument_string}&signature=#{signature}"
 
     headers = [
-      {@api_key_header, credentials.api_key},
+      {@api_key_header, credentials().api_key},
       {"Content-Type", "application/x-www-form-urlencoded"}
     ]
 
@@ -119,4 +121,8 @@ defmodule ExBinance.Rest.HTTPClient do
 
   def endpoint, do: "https://#{domain()}"
   def domain, do: Application.get_env(:ex_binance, :domain, "fapi.binance.com")
+
+  def credentials do
+    Credentials.fetch()
+  end
 end
