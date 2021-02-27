@@ -24,7 +24,6 @@ defmodule ExBinance.Rest.UserDataStream do
   end
 
   defp parse_response({:ok, response}) do
-    IO.inspect(response, label: "response")
     {:ok, ExBinance.Responses.UserDataStream.new(response)}
   end
 
