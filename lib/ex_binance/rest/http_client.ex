@@ -54,7 +54,11 @@ defmodule ExBinance.Rest.HTTPClient do
       |> Enum.join("&")
 
     signature = sign(credentials().secret_key, argument_string)
-    body = "#{argument_string}&signature=#{signature}"
+
+    body =
+      [argument_string, "signature=#{signature}"]
+      |> Enum.filter(&(&1 != ""))
+      |> Enum.join("&")
 
     headers = [
       {@api_key_header, credentials().api_key},
@@ -63,6 +67,33 @@ defmodule ExBinance.Rest.HTTPClient do
 
     "#{endpoint()}#{path}"
     |> HTTPoison.post(body, headers)
+    |> parse_response()
+  end
+
+  @spec put(String.t(), map) :: {:ok, any} | {:error, shared_errors}
+  def put(path, params) do
+    argument_string =
+      params
+      |> Map.to_list()
+      |> Enum.map(fn x -> Tuple.to_list(x) |> Enum.join("=") end)
+      |> Enum.join("&")
+
+    signature = sign(credentials().secret_key, argument_string)
+
+    body =
+      [argument_string, "signature=#{signature}"]
+      |> Enum.filter(&(&1 != ""))
+      |> Enum.join("&")
+
+    headers = [
+      {@api_key_header, credentials().api_key},
+      {"Content-Type", "application/x-www-form-urlencoded"}
+    ]
+
+    IO.inspect(body, label: "body")
+
+    "#{endpoint()}#{path}"
+    |> HTTPoison.put(body, headers)
     |> parse_response()
   end
 

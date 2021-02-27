@@ -31,7 +31,10 @@ defmodule ExBinance.Private do
 
   defdelegate cancel_all_orders(symbol, futures), to: ExBinance.Rest.CancelAllOrders
 
-  def path(futures) do
+  defdelegate user_data_stream(), to: ExBinance.Rest.UserDataStream
+  defdelegate update_listen_key(), to: ExBinance.Rest.UserDataStream
+
+  defp path(futures) do
     if futures, do: "/fapi/v2/account", else: "/api/v3/account"
   end
 end
