@@ -34,6 +34,13 @@ defmodule ExBinance.Private do
   defdelegate user_data_stream(), to: ExBinance.Rest.UserDataStream
   defdelegate update_listen_key(), to: ExBinance.Rest.UserDataStream
 
+  defdelegate get_order(
+                symbol,
+                timestamp,
+                order_id
+              ),
+              to: ExBinance.Rest.Order
+
   defp path(futures) do
     if futures, do: "/fapi/v2/account", else: "/api/v3/account"
   end
