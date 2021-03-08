@@ -14,10 +14,11 @@ defmodule ExBinance.Candlestick do
   #   "17928899.62484339" // Ignore.
   # ]
 
-  defstruct [:open_time, :open, :high, :low, :close, :volume]
+  defstruct [:open_time, :open, :high, :low, :close, :volume, :close_time, :trades_number]
 
   def new(list) when is_list(list) do
-    {[open_time, open, high, low, close, volume], _} = Enum.split(list, 6)
+    {[open_time, open, high, low, close, volume, close_time, _, trades_number], _} =
+      Enum.split(list, 9)
 
     %__MODULE__{
       open_time: open_time,
@@ -25,7 +26,9 @@ defmodule ExBinance.Candlestick do
       high: String.to_float(high),
       low: String.to_float(low),
       close: String.to_float(close),
-      volume: volume
+      volume: volume,
+      close_time: close_time,
+      trades_number: trades_number
     }
   end
 
