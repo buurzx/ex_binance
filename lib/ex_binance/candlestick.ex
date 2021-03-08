@@ -26,7 +26,7 @@ defmodule ExBinance.Candlestick do
       high: String.to_float(high),
       low: String.to_float(low),
       close: String.to_float(close),
-      volume: volume,
+      volume: String.to_float(volume),
       close_time: close_time,
       trades_number: trades_number
     }
