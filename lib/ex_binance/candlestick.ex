@@ -20,14 +20,18 @@ defmodule ExBinance.Candlestick do
     {[open_time, open, high, low, close, volume, close_time, _, trades_number], _} =
       Enum.split(list, 9)
 
+    {processed_open, _} = Float.parse(open)
+    {processed_high, _} = Float.parse(high)
+    {processed_low, _} = Float.parse(low)
+    {processed_close, _} = Float.parse(close)
     {processed_volume, _} = Float.parse(volume)
 
     %__MODULE__{
       open_time: open_time,
-      open: String.to_float(open),
-      high: String.to_float(high),
-      low: String.to_float(low),
-      close: String.to_float(close),
+      open: processed_open,
+      high: processed_high,
+      low: processed_low,
+      close: processed_close,
       volume: processed_volume,
       close_time: close_time,
       trades_number: trades_number
