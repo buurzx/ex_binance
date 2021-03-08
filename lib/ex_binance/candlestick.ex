@@ -22,7 +22,7 @@ defmodule ExBinance.Candlestick do
 
     %__MODULE__{
       open_time: open_time,
-      open: open,
+      open: String.to_float(open),
       high: String.to_float(high),
       low: String.to_float(low),
       close: String.to_float(close),
